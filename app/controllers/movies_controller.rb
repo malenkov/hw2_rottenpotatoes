@@ -10,7 +10,7 @@ class MoviesController < ApplicationController
     @all_ratings = Movie.all_ratings()   
 
     if (params[:ratings] != nil)
-	@selected_ratings  = params[:ratings].keys
+	@selected_ratings  = params[:ratings].respond_to?('keys') ? params[:ratings].keys : params[:ratings]
     else
 	@selected_ratings = session[:ratings]
     end
@@ -39,6 +39,10 @@ class MoviesController < ApplicationController
 
     session[:sort_by] = @sort_by
     session[:ratings] = @selected_ratings
+
+    if ((params[:sort_by] != @sort_by) || (params[:ratings] != @selected_ratings))  
+    	redirect_to movies_path(:sort_by => @sort_by, :ratings => @selected_ratings)
+    end
 
     if (@selected_ratings == [])
     	if (@sort_by != nil)
