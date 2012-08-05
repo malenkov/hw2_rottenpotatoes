@@ -31,7 +31,13 @@ class MoviesController < ApplicationController
 		@release_date_class = 'hilite'
 		@refresh_sort = 'release_date'
 	end
+
+	if (@selected_ratings == [] && session.include?(:ratings))
+		@selected_ratings = session[:ratings]
+	end	
     end
+
+    session[:ratings] = @selected_ratings
 
     if (@selected_ratings == [])
     	if (@sort_by != nil)
