@@ -7,13 +7,13 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @all_ratings = Movie.all_ratings()
+    @all_ratings = Movie.all_ratings()   
 
-	ratings = params[:ratings]
-	if (ratings != nil)
-		ratings = ratings.keys
-		puts ratings
-	end
+    if (params[:ratings] != nil)
+	@selected_ratings  = params[:ratings].keys
+    else
+	@selected_ratings = []
+    end
 
     if (params[:sort_by] != nil)
 	@sort_by = params[:sort_by]
@@ -33,17 +33,17 @@ class MoviesController < ApplicationController
 	end
     end
 
-    if (ratings == nil)
+    if (@selected_ratings == [])
     	if (@sort_by != nil)
 		@movies = Movie.find(:all, :order => @sort_by)
     	else	
-		@movies = Movie.all
+		@movies = Movie.find(:all)
     	end
     else
 	if (@sort_by != nil)
-		@movies = Movie.where(:rating => ratings).order(@sort_by)
+		@movies = Movie.where(:rating => @selected_ratings).order(@sort_by)
 	else
-		@movies = Movie.where(:rating => ratings)
+		@movies = Movie.where(:rating => @selected_ratings)
 	end
     end
   end
