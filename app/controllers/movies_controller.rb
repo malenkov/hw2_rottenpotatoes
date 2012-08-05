@@ -15,10 +15,6 @@ class MoviesController < ApplicationController
 	@selected_ratings = session[:ratings]
     end
  
-    if (@selected_ratings == nil)
-    	@selected_ratings = []
-    end
-
     if (params[:sort_by] != nil)
 	@sort_by = params[:sort_by]
     else
@@ -40,8 +36,13 @@ class MoviesController < ApplicationController
     session[:sort_by] = @sort_by
     session[:ratings] = @selected_ratings
 
-    if ((params[:sort_by] != @sort_by) || (params[:ratings] != @selected_ratings))  
+    if ((params[:sort_by] != @sort_by) || 
+        (params[:ratings] != @selected_ratings))  
     	redirect_to movies_path(:sort_by => @sort_by, :ratings => @selected_ratings)
+    end
+
+    if (@selected_ratings == nil)
+	@selected_ratings = []
     end
 
     if (@selected_ratings == [])
