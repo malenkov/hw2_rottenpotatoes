@@ -12,13 +12,17 @@ class MoviesController < ApplicationController
     if (params[:ratings] != nil)
 	@selected_ratings  = params[:ratings].keys
     else
-	@selected_ratings = []
+	@selected_ratings = session[:ratings]
+    end
+ 
+    if (@selected_ratings == nil)
+    	@selected_ratings = []
     end
 
     if (params[:sort_by] != nil)
 	@sort_by = params[:sort_by]
     else
-	@sort_by = params[:hidden_sort]
+	@sort_by = session[:sort_by]
     end
 
     if (@sort_by != nil)
@@ -31,12 +35,9 @@ class MoviesController < ApplicationController
 		@release_date_class = 'hilite'
 		@refresh_sort = 'release_date'
 	end
-
-	if (@selected_ratings == [] && session.include?(:ratings))
-		@selected_ratings = session[:ratings]
-	end	
     end
 
+    session[:sort_by] = @sort_by
     session[:ratings] = @selected_ratings
 
     if (@selected_ratings == [])
