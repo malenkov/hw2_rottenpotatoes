@@ -7,7 +7,7 @@
     = rating
     = check_box_tag "ratings[#{rating}]"
   = hidden_field_tag 'hidden_sort', @sort_by
-  = submit_tag#ratings_submit 'Refresh'
+  = submit_tag 'Refresh', :id => 'ratings_submit'
 
 %table#movies
   %thead
