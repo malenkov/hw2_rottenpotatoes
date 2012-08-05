@@ -7,56 +7,39 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @all_ratings = Movie.all_ratings()   
-
-    if (params[:ratings] != nil)
-	@selected_ratings  = params[:ratings].respond_to?('keys') ? params[:ratings].keys : params[:ratings]
+    @selected_ratings = if (params[:ratings] != nil) then
+      params[:ratings].respond_to?('keys') ? params[:ratings].keys : params[:ratings]
     else
-	@selected_ratings = session[:ratings]
-    end
- 
-    if (params[:sort_by] != nil)
-	@sort_by = params[:sort_by]
-    else
-	@sort_by = session[:sort_by]
+      session[:ratings]
     end
 
-    if (@sort_by != nil)
-	if (@sort_by == 'title')
-		@title_class = 'hilite'
-		@refresh_sort = 'title'
-	end
-
-	if (@sort_by == 'release_date')
-		@release_date_class = 'hilite'
-		@refresh_sort = 'release_date'
-	end
-    end
+    @sort_by = (params[:sort_by] != nil) ? params[:sort_by] : session[:sort_by]
 
     session[:sort_by] = @sort_by
     session[:ratings] = @selected_ratings
 
-    if ((params[:sort_by] != @sort_by) || 
-        (params[:ratings] != @selected_ratings))  
-    	redirect_to movies_path(:sort_by => @sort_by, :ratings => @selected_ratings)
+    if ((params[:sort_by] != @sort_by) || (params[:ratings] != @selected_ratings))
+      redirect_to movies_path(:sort_by => @sort_by, :ratings => @selected_ratings)
+    end
+
+    @all_ratings = Movie.all_ratings()
+
+    if (@sort_by == 'title')
+      @title_class = 'hilite'
+    end
+
+    if (@sort_by == 'release_date')
+      @release_date_class = 'hilite'
     end
 
     if (@selected_ratings == nil)
-	@selected_ratings = []
+      @selected_ratings = []
     end
 
     if (@selected_ratings == [])
-    	if (@sort_by != nil)
-		@movies = Movie.find(:all, :order => @sort_by)
-    	else	
-		@movies = Movie.find(:all)
-    	end
+    	@movies = Movie.find(:all, :order => @sort_by)
     else
-	if (@sort_by != nil)
-		@movies = Movie.where(:rating => @selected_ratings).order(@sort_by)
-	else
-		@movies = Movie.where(:rating => @selected_ratings)
-	end
+      @movies = Movie.where(:rating => @selected_ratings).order(@sort_by)
     end
   end
 
